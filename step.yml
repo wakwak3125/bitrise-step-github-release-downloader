@@ -63,23 +63,29 @@ inputs:
   - github_access_token:
     opts:
       title: GitHub Access Token
-      summary: Your access token to access your repository
-      description: |
+      summary: Your access token to access the repository
+      description: |-
         Github Personal API token used to access the GitHub API.
         Create your own token: https://github.com/settings/tokens
         The following scopes needs to be enabled for the token:
         - repo/publick_repo
       is_expand: true
       is_required: true
-  - tag: latest
+  - tag:
     opts:
       title: Tag for download
-      description: |
+      description: |-
         Tag for download.
         Set **latest** to always download latest assets.
-  - source:
+  - source: 
     opts:
       title: Download file names
-      description: |
+      description: |-
         Download file names.(You can separete with comma. e.g)file1,file2,file3)
+      is_required: true
+  - repository_url:
+    opts:
+      title: Repository Url that you want to access
+      description: |-
+        Repository Url that you want to access
       is_required: true
