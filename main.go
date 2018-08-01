@@ -8,9 +8,9 @@ import (
 	"os"
 	"strings"
 	"sync"
-
+	
 	"github.com/bitrise-io/go-utils/log"
-
+	
 	"github.com/bitrise-tools/go-steputils/stepconf"
 	"github.com/google/go-github/github"
 	"golang.org/x/oauth2"
@@ -41,7 +41,7 @@ func failf(format string, args ...interface{}) {
 // ssh://git@hostname:port/owner/repository.git
 func parseRepo(url string) (host string, owner string, name string) {
 	url = strings.TrimSuffix(url, ".git")
-
+	
 	var repo string
 	switch {
 	case strings.HasPrefix(url, "https://"):
@@ -57,7 +57,7 @@ func parseRepo(url string) (host string, owner string, name string) {
 		host = url[:strings.Index(url, ":")]
 		repo = url[strings.Index(url, "/")+1:]
 	}
-
+	
 	split := strings.Split(repo, "/")
 	return host, split[0], split[1]
 }
@@ -83,6 +83,15 @@ func getRelease(
 	return client.Repositories.GetReleaseByTag(ctx, owner, repo, tag)
 }
 
+func createGitHubClient(ctx context.Context, c Config) (*github.Client) {
+	ts := oauth2.StaticTokenSource(
+		&oauth2.Token{AccessToken: string(c.AccessToken)},
+	)
+	tc := oauth2.NewClient(ctx, ts)
+	client := github.NewClient(tc)
+	return client
+}
+
 func main() {
 	var c Config
 	if err := stepconf.Parse(&c); err != nil {
@@ -91,11 +100,7 @@ func main() {
 	stepconf.Print(c)
 	fileNames := strings.Split(c.FileNames, ",")
 	ctx := context.Background()
-	ts := oauth2.StaticTokenSource(
-		&oauth2.Token{AccessToken: string(c.AccessToken)},
-	)
-	tc := oauth2.NewClient(ctx, ts)
-	client := github.NewClient(tc)
+	client := createGitHubClient(ctx, c)
 	_, owner, repo := parseRepo(c.RepositoryURL)
 	release, _, err := getRelease(ctx, client, c.Tag, owner, repo)
 	if err != nil {
