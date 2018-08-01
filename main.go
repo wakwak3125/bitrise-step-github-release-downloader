@@ -106,7 +106,7 @@ func main() {
 	if err != nil {
 		failf("Failed to fetch release: %v", err)
 	}
-	metas := []Meta{}
+	var metas []Meta
 	assets := release.Assets
 	for _, asset := range assets {
 		if contains(fileNames, *asset.Name) {
