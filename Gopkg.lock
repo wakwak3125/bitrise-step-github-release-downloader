@@ -88,6 +88,7 @@
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
+    "github.com/bitrise-io/go-utils/log",
     "github.com/bitrise-tools/go-steputils/stepconf",
     "github.com/google/go-github/github",
     "golang.org/x/oauth2",
